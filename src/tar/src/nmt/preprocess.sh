@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ENV_DIR=${SCRIPT_DIR}/../../env/bin
+ENV_DIR=${SCRIPT_DIR}/../../../../venv/bin
 source $ENV_DIR/activate
 
 DATASETS_DIR=$1

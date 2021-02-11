@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ENV_DIR=${SCRIPT_DIR}/../../env
+ENV_DIR=./TranslateAlignRetrieve/src/tar/env
 source $ENV_DIR/bin/activate
 
 LANG_SRC=$1

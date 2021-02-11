@@ -1,7 +1,7 @@
 # This script create the Train/Dev/Test datasets.
 #!/bin/bash
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-ENV_DIR=${SCRIPT_DIR}/../../env/bin
+ENV_DIR=${SCRIPT_DIR}/../../../../venv/bin
 source $ENV_DIR/activate
 
 SRC_FILE=$1
@@ -16,12 +16,20 @@ if [[ $# -eq 0 ]]
   TGT_FILE=${SCRIPT_DIR}/corpora/en-es/corpora.es
   TGT_LANG=es
 fi
+echo "source_file", ${SRC_FILE}
+echo "SRC_LANG", ${SRC_LANG}
+echo "TGT_FILE", ${TGT_FILE}
+echo "TGT_LANG", ${TGT_LANG}
+echo "DATASETS_DIR", ${DATASETS_DIR}
+
 
 # Create datasets dir
 SRC_TO_TGT=${SRC_LANG}'2'${TGT_LANG}
 DATASETS_DIR=${SCRIPT_DIR}/data/${SRC_TO_TGT}/datasets
+echo ${DATASETS_DIR}
+
 mkdir -p ${DATASETS_DIR}
-python ${SCRIPT_DIR}/src/create_datasets.py
+python ${SCRIPT_DIR}/create_datasets.py \
     --source_file ${SRC_FILE} \
     --source_lang ${SRC_LANG} \
     --target_file ${TGT_FILE} \
@@ -29,5 +37,13 @@ python ${SCRIPT_DIR}/src/create_datasets.py
     --output_dir ${DATASETS_DIR} \
     --test_size 1000 \
     --valid_size 5000
+
+# python create_datasets.py --source_file /home/advicetec/PycharmProjects/TranslateAlignRetrieve/src/tar/src/nmt/corpora/en-es/corpora.en \
+         --source_lang en \
+         --target_file /home/advicetec/PycharmProjects/TranslateAlignRetrieve/src/tar/src/nmt/corpora/en-es/corpora.es \
+         --target_lang es \
+         --output_dir /home/advicetec/PycharmProjects/TranslateAlignRetrieve/src/tar/src/nmt/data/en2es/datasets \
+         --test_size 1000 \
+         --valid_size 5000
 
 

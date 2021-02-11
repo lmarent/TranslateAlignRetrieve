@@ -45,3 +45,6 @@ cd ${SCRIPT_DIR}
 # OpenNMT
 ONMT_DIR=${TOOLS_DIR}/OpenNMT-py
 git clone https://github.com/OpenNMT/OpenNMT-py.git ${ONMT_DIR}
+cd ${ONMT_DIR}
+pip install -e .
+pip install torch==1.7.1+cu101 torchvision==0.8.2+cu101 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
