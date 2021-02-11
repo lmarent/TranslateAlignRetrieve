@@ -19,9 +19,17 @@ data:
 src_vocab: /content/TranslateAlignRetrieve/src/tar/src/nmt/data/run/example.vocab.src
 tgt_vocab: /content/TranslateAlignRetrieve/src/tar/src/nmt/data/run/example.vocab.tgt
 
-save_model: /content/TranslateAlignRetrieve/src/tar/src/nmt/exp/model.en-es
-save_checkpoint_steps: 10000
-keep_checkpoint: 10
+both_embeddings: /content/gdrive/MyDrive/glove/glove.6B.300d.txt
+
+# supported types: GloVe, word2vec
+embeddings_type: "GloVe"
+
+# word_vec_size need to match with the pretrained embeddings dimensions
+word_vec_size: 300
+
+save_model: /content/gdrive/MyDrive/data/exp/model.en-es
+save_checkpoint_steps: 1000
+keep_checkpoint: 3
 seed: 3435
 train_steps: 500000
 valid_steps: 10000
