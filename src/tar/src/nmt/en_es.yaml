@@ -65,7 +65,7 @@ param_init_glorot: 'true'
 position_encoding: 'true'
 
 # this param is used to start from a check_point
-train_from: model.en-es_step_60000.pt
+train_from: /content/gdrive/MyDrive/data/model.en-es_step_60000.pt
 
 world_size: 1
 gpu_ranks:
