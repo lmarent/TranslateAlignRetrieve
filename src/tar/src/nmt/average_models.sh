@@ -21,7 +21,7 @@ fi
 
 echo -e "Averaging models...\n${MODEL1}\n${MODEL2}\n${MODEL3}"
 
-MODEL_DIR=/content/gdrive/MyDrive/data/exp/
+MODEL_DIR=/content/gdrive/MyDrive/data/exp
 AVERAGE_MODEL=${MODEL_DIR}/${LANG_SRC}"2"${LANG_TGT}_average_model.pt
 
 python ${SCRIPT_DIR}/../../tools/OpenNMT-py/tools/average_models.py \
