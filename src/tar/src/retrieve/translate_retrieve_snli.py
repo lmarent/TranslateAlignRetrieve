@@ -8,7 +8,6 @@ from collections import defaultdict
 import pickle
 import argparse
 import translate_retrieve_squad_utils as utils
-from tqdm import tqdm
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -37,23 +36,21 @@ class SNLITranslator:
         # initialize SNLI version
         self.snli_version = '1.0'
 
-    # Translate all the textual content in the SQUAD dataset, 
-    # that are, context, questions and answers.
+    # Translate all the textual content in the SNLI dataset,
+    # that are, sentences and gold classification.
     # The alignment between context and its translation is then computed.
-    # The output is a dictionary with context, question, answer as keys 
+    # The output is a dictionary with sentence pairs, sentences and classification
     # and their translation/alignment as values
     def translate_align_content(self):
-        # Load squad content and get squad contexts
+        # Load snli content and get snli contexts
         with open(self.snli_file) as hn:
             content = json.load(hn)
 
-        # Get SQuAD version
-        self.squad_version = content['version']
-
-        # Check is the content of SQUAD has been translated and aligned already
+        # Check if the content of SNLI has been translated and aligned already
         content_translations_alignments_file = os.path.join(self.output_dir,
                                                     '{}_content_translations_alignments.{}'.format(
-                                                        os.path.basename(self.squad_file), self.lang_target))
+                                                        os.path.basename(self.snli_file),
+                                                        self.lang_target))
         if not os.path.isfile(content_translations_alignments_file):
             # Extract contexts, questions and answers. The context is further
             # divided into sentence in order to translate and compute the alignment.
@@ -127,18 +124,12 @@ class SNLITranslator:
             with open(content_translations_alignments_file, 'rb') as fn:
                 self.content_translations_alignments = pickle.load(fn)
 
-    # Parse the SQUAD file and replace the questions, context and answers field with their translations
-    # using the content_translations_alignments
-
-    # For the answer translated the following two-steps logic is applied:
-    # 1) Translate the answer and find them in the context translated
-    #   1.1) searching around the answer start provided by the alignment
-    #   1.2) if not the previous, searching from the beginning of the context translated
-    #
-    # 2) If the previous two steps fail, optionally extract the answer from the context translated
-    # using the answer start and answer end provided by the alignment
     def translate_retrieve(self):
-        with open(self.squad_file) as fn:
+        """
+            # Parse the SNLI file and replace sentences with their translations
+            # using the content_translations_alignments
+        """
+        with open(self.snli_file) as fn:
             content = json.load(fn)
 
         for data in tqdm(content['data']):
@@ -345,14 +336,15 @@ class SNLITranslator:
 if __name__ == "__main__":
     start = time.time()
     parser = argparse.ArgumentParser()
-    parser.add_argument('-squad_file', type=str, help='SQUAD dataset to translate')
+    parser.add_argument('-squad_file', type=str, help='SNLI dataset to translate')
     parser.add_argument('-lang_source', type=str, default='en',
-                        help='language of the SQUAD dataset to translate (the default valueis set to English)')
+                        help='language of the SNLI dataset to translate (the default value is set to English)')
     parser.add_argument('-lang_target', type=str, help='translation language')
     parser.add_argument('-output_dir', type=str, help='directory where all the generated files are stored')
     parser.add_argument('-answers_from_alignment', action='store_true',
                         help='retrieve translated answers only from the alignment')
-    parser.add_argument('-alignment_type', type=str, default='forward', help='use a given translation service')
+    parser.add_argument('-alignment_type', type=str,
+                        default='forward', help='use a given translation service')
     parser.add_argument('-batch_size', type=int, default='32', help='batch_size for the translation script '
                                                                     '(change this value in case of CUDA out-of-memory')
     args = parser.parse_args()
@@ -363,7 +355,7 @@ if __name__ == "__main__":
     except FileExistsError:
         pass
 
-    translator = SquadTranslator(args.squad_file,
+    translator = SNLITranslator(args.squad_file,
                                  args.lang_source,
                                  args.lang_target,
                                  args.output_dir,
@@ -371,11 +363,12 @@ if __name__ == "__main__":
                                  args.answers_from_alignment,
                                  args.batch_size)
 
-    logging.info('Translate SQUAD textual content and compute alignments...')
+    logging.info('Translate SNLI textual content and compute alignments...')
     translator.translate_align_content()
 
-    logging.info('Translate and retrieve the SQUAD dataset...')
+    logging.info('Translate and retrieve the SNLI dataset...')
     translator.translate_retrieve()
 
     end = time.time()
     logging.info('Total execution time: {} s'.format(round(end - start)))
+
