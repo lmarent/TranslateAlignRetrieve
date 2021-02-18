@@ -7,45 +7,20 @@ from sacremoses import MosesTokenizer, MosesDetokenizer
 from collections import defaultdict
 from nltk import sent_tokenize
 
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-
-# PROCESSING TEXT
-tokenizer_en = MosesTokenizer(lang='en')
-detokenizer_en = MosesDetokenizer(lang='en')
-tokenizer_es = MosesTokenizer(lang='es')
-detokenizer_es = MosesDetokenizer(lang='es')
-
-MAX_NUM_TOKENS = 10
-SPLIT_DELIMITER = ';'
-LANGUAGE_ISO_MAP = {'en': 'english', 'es': 'spanish'}
+from .translate_retrieve_utils import tokenize
+from .translate_retrieve_utils import MAX_NUM_TOKENS
+from .translate_retrieve_utils import SPLIT_DELIMITER
+from .translate_retrieve_utils import LANGUAGE_ISO_MAP
 
 
-def tokenize(text, lang, return_str=True):
-    if lang == 'en':
-        text_tok = tokenizer_en.tokenize(text, return_str=return_str, escape=False)
-        return text_tok
-    elif lang == 'es':
-        text_tok = tokenizer_es.tokenize(text, return_str=return_str, escape=False)
-        return text_tok
 
-
-def de_tokenize(text, lang):
-    if not isinstance(text, list):
-        text = text.split()
-
-    if lang == 'en':
-        text_detok = detokenizer_en.detokenize(text, return_str=True)
-        return text_detok
-    elif lang == 'es':
-        text_detok = detokenizer_es.detokenize(text, return_str=True)
-        return text_detok
-
-
-# Chunk sentences longer than a maximum number of words/tokens based on a delimiter character.
-# This option is used only for very long sentences to avoid shorter translation than the
-# original source length.
-# Note that the delimiter can't be a trailing character
 def split_sentences(text, lang, delimiter=SPLIT_DELIMITER, max_size=MAX_NUM_TOKENS, tokenized=True):
+    """
+       Chunk sentences longer than a maximum number of words/tokens based on a delimiter character.
+       This option is used only for very long sentences to avoid shorter translation than the
+       original source length.
+       Note that the delimiter can't be a trailing character
+    """
     text_len = len(tokenize(text, lang, return_str=True).split()) if tokenized else len(text.split())
     if text_len >= max_size:
         delimiter_match = delimiter + ' '
