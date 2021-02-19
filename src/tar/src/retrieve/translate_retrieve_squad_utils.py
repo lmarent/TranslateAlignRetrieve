@@ -398,28 +398,6 @@ def post_process_translation(source, translation, punctuation=PUNCTUATION):
         return translation
 
 
-# Translate via the OpenNMT-py script
-def translate(source_sentences, file, output_dir, batch_size):
-    filename = os.path.basename(file)
-    source_filename = os.path.join(output_dir, '{}_source_translate'.format(filename))
-    with open(source_filename, 'w') as sf:
-        sf.writelines('\n'.join(s for s in source_sentences))
-
-    translation_filename = os.path.join(output_dir, '{}_target_translated'.format(filename))
-    en2es_translate_cmd = SCRIPT_DIR + '/../nmt/en2es_translate.sh {} {} {}'.format(source_filename,
-                                                                                    translation_filename,
-                                                                                    batch_size)
-    subprocess.run(en2es_translate_cmd.split())
-
-    with open(translation_filename) as tf:
-        translated_sentences = [s.strip() for s in tf.readlines()]
-
-    os.remove(source_filename)
-    os.remove(translation_filename)
-
-    return translated_sentences
-
-
 # COMPUTE ALIGNMENT
 # Compute alignment between source and target sentences
 def compute_alignment(source_sentences, source_lang, translated_sentences, target_lang,

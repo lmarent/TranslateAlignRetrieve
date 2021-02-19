@@ -7,7 +7,8 @@ import os
 from collections import defaultdict
 import pickle
 import argparse
-import translate_retrieve_squad_utils as utils
+import translate_retrieve_utils as utils
+import translate_retrieve_squad_utils import squad_utils
 from tqdm import tqdm
 import logging
 
@@ -61,7 +62,7 @@ class SquadTranslator:
                                  for data in tqdm(content['data'])
                                  for paragraph in tqdm(data['paragraphs'])
                                  for context_sentence in
-                                 tqdm(utils.tokenize_sentences(utils.remove_line_breaks(paragraph['context']),
+                                 tqdm(utils.tokenize_sentences(squad_utils.remove_line_breaks(paragraph['context']),
                                                                lang=self.lang_source))
                                  if context_sentence]
 
@@ -102,7 +103,7 @@ class SquadTranslator:
             content_translated = utils.translate(content, self.squad_file, self.output_dir, self.batch_size)
 
             # Compute alignments
-            context_sentence_questions_answers_alignments = utils.compute_alignment(content,
+            context_sentence_questions_answers_alignments = squad_utils.compute_alignment(content,
                                                                                     self.lang_source,
                                                                                     content_translated,
                                                                                     self.lang_target,
@@ -145,12 +146,12 @@ class SquadTranslator:
             for paragraphs in data['paragraphs']:
                 context = paragraphs['context']
 
-                context_sentences = [s for s in utils.tokenize_sentences(utils.remove_line_breaks(context),
+                context_sentences = [s for s in utils.tokenize_sentences(squad_utils.remove_line_breaks(context),
                                                                          lang=self.lang_source)]
 
                 context_translated = ' '.join(self.content_translations_alignments[s]['translation']
                                               for s in context_sentences)
-                context_alignment_tok = utils.compute_context_alignment(
+                context_alignment_tok = squad_utils.compute_context_alignment(
                     [self.content_translations_alignments[s]['alignment']
                      for s in context_sentences])
 
@@ -167,7 +168,7 @@ class SquadTranslator:
                             for answer in qa['answers']:
                                 answer_translated = self.content_translations_alignments[answer['text']]['translation']
                                 answer_translated, answer_translated_start = \
-                                    utils.extract_answer_translated(answer,
+                                    squad_utils.extract_answer_translated(answer,
                                                                     answer_translated,
                                                                     context,
                                                                     context_translated,
@@ -180,7 +181,7 @@ class SquadTranslator:
                             for plausible_answer in qa['plausible_answers']:
                                 plausible_answer_translated = self.content_translations_alignments[plausible_answer['text']]['translation']
                                 answer_translated, answer_translated_start = \
-                                    utils.extract_answer_translated(plausible_answer,
+                                    squad_utils.extract_answer_translated(plausible_answer,
                                                                     plausible_answer_translated,
                                                                     context,
                                                                     context_translated,
@@ -194,7 +195,7 @@ class SquadTranslator:
                         for answer in qa['answers']:
                             answer_translated = self.content_translations_alignments[answer['text']]['translation']
                             answer_translated, answer_translated_start = \
-                                utils.extract_answer_translated(answer,
+                                squad_utils.extract_answer_translated(answer,
                                                                 answer_translated,
                                                                 context,
                                                                 context_translated,

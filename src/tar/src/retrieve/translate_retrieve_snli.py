@@ -44,7 +44,10 @@ class SNLITranslator:
     def translate_align_content(self):
         # Load snli content and get snli contexts
         with open(self.snli_file) as hn:
-            content = json.load(hn)
+            lines = hn.readlines()
+        content_lines = []
+        for line in lines:
+            content_lines.append(json.load(line))
 
         # Check if the content of SNLI has been translated and aligned already
         content_translations_alignments_file = os.path.join(self.output_dir,
@@ -54,69 +57,70 @@ class SNLITranslator:
         if not os.path.isfile(content_translations_alignments_file):
             # Extract contexts, questions and answers. The context is further
             # divided into sentence in order to translate and compute the alignment.
-            titles = [data['title']
-                      for data in tqdm(content['data'])]
-            context_sentences = [context_sentence
-                                 for data in tqdm(content['data'])
-                                 for paragraph in tqdm(data['paragraphs'])
-                                 for context_sentence in
-                                 tqdm(utils.tokenize_sentences(utils.remove_line_breaks(paragraph['context']),
-                                                               lang=self.lang_source))
-                                 if context_sentence]
+            sentences_one = []
+            sentences_two = []
+            sentences_one_parse = []
+            sentences_two_parse = []
+            sentences_one_binary_parse = []
+            sentences_two_binary_parse = []
+            for content in tqdm(content_lines):
+                sentences_one.append(utils.tokenize_sentences(content['sentence1']))
+                sentences_two.append(utils.tokenize_sentences(content['sentence2']))
+                sentences_one_parse.append(utils.tokenize_sentences(content['sentence1_parse']))
+                sentences_two_parse.append(utils.tokenize_sentences(content['sentence2_parse']))
+                sentences_one_binary_parse.append(utils.tokenize_sentences(content['sentence1_binary_parse']))
+                sentences_two_binary_parse.append(utils.tokenize_sentences(content['sentence2_binary_parse']))
 
-            questions = [qa['question']
-                         for data in tqdm(content['data'])
-                         for paragraph in tqdm(data['paragraphs'])
-                         for qa in paragraph['qas']
-                         if qa['question']]
+            sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)
+            sentence_two_translated = utils.translate(sentences_two, self.snli_file,
+                                                      self.output_dir, self.batch_size)
+            sentences_one_parse_translated = utils.translate(sentences_one_parse,
+                                                             self.snli_file, self.output_dir, self.batch_size)
+            sentences_two_parse_translated = utils.translate(sentences_two_parse,
+                                                             self.snli_file, self.output_dir, self.batch_size)
+            sentences_one_binary_parse_translated = utils.translate(sentences_one_binary_parse,
+                                                                    self.snli_file, self.output_dir, self.batch_size)
+            sentences_two_binary_parse_translated = utils.translate(sentences_two_binary_parse,
+                                                                    self.snli_file, self.output_dir, self.batch_size)
 
-            answers = [answer['text']
-                       for data in tqdm(content['data'])
-                       for paragraph in tqdm(data['paragraphs'])
-                       for qa in paragraph['qas']
-                       for answer in qa['answers']
-                       if answer['text']]
+            logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
-            # extract plausible answers when 'is_impossible == True' for SQUAD v2.0
-            if self.squad_version == 'v2.0':
-                plausible_answers = []
-                for data in tqdm(content['data']):
-                    for paragraph in tqdm(data['paragraphs']):
-                        for qa in paragraph['qas']:
-                            if qa['is_impossible']:
-                                for answer in qa['plausible_answers']:
-                                    plausible_answers.append(answer['text'])
-            else:
-                plausible_answers = []
-
-            content = titles + context_sentences + questions + answers + plausible_answers
-
-            # Remove duplicated while keeping the order of occurrence
-            # content = sorted(set(content), key=content.index)
-            content = set(content)
-            logging.info('Collected {} sentence to translate'.format(len(content)))
-
+            i = 0
+            new_content_lines = []
+            for content in tqdm(content_lines):
+                content_line = {}
+                content_line['sentencia1'] = sentence_one_translated[i]
+                content_line['sentencia2'] = sentence_two_translated[i]
+                content_line['sentencia_uno_parse'] = sentences_one_parse_translated[i]
+                content_line['sentencia_dos_parse'] = sentences_two_parse_translated[i]
+                content_line['sentencia_uno_binaria_parse'] = sentences_one_binary_parse_translated[i]
+                content_line['sentencia_dos_binaria_parse'] = sentences_two_binary_parse_translated[i]
+                content_line['labels_anotador'] = content['annotator_labels']
+                content_line['idLeyenda'] = content['captionID']
+                content_line['etiqueta_predominante'] = content['gold_label']
+                content_line['idPar'] = content['pairID']
+                new_content_lines.append(content_line)
             # Translate contexts, questions and answers all together and write to file.
             # Also remove duplicates before to translate with set
-            content_translated = utils.translate(content, self.squad_file, self.output_dir, self.batch_size)
+            #content_translated = utils.translate(content, self.squad_file, self.output_dir, self.batch_size)
 
             # Compute alignments
-            context_sentence_questions_answers_alignments = utils.compute_alignment(content,
-                                                                                    self.lang_source,
-                                                                                    content_translated,
-                                                                                    self.lang_target,
-                                                                                    self.alignment_type,
-                                                                                    self.squad_file,
-                                                                                    self.output_dir)
-
-            # Add translations and alignments
-            for sentence, sentence_translated, alignment in zip(content,
-                                                                content_translated,
-                                                                context_sentence_questions_answers_alignments):
-                self.content_translations_alignments[sentence] = {'translation': sentence_translated,
-                                                               'alignment': alignment}
+            # context_sentence_questions_answers_alignments = utils.compute_alignment(content,
+            #                                                                         self.lang_source,
+            #                                                                         content_translated,
+            #                                                                         self.lang_target,
+            #                                                                         self.alignment_type,
+            #                                                                         self.squad_file,
+            #                                                                         self.output_dir)
+            #
+            # # Add translations and alignments
+            # for sentence, sentence_translated, alignment in zip(content,
+            #                                                     content_translated,
+            #                                                     context_sentence_questions_answers_alignments):
+            #     self.content_translations_alignments[sentence] = {'translation': sentence_translated,
+            #                                                    'alignment': alignment}
             with open(content_translations_alignments_file, 'wb') as fn:
-                pickle.dump(self.content_translations_alignments, fn)
+                pickle.dump(new_content_lines, fn)
 
         # Load content translated and aligned from file
         else:
