@@ -7,7 +7,6 @@ import os
 from collections import defaultdict
 import pickle
 import argparse
-import translate_retrieve_squad_utils as squad_utils
 import translate_retrieve_utils as utils
 from nltk import sent_tokenize
 import logging
@@ -38,6 +37,11 @@ def tokenize_sentences(text, lang):
                  for chunk in split_sentences(sentence, lang, '|')]
     return sentences
 
+def tokenize_sentences_unlimited_size(text, lang):
+    sentences = [chunk
+                 for sentence in sent_tokenize(text, utils.LANGUAGE_ISO_MAP[lang])
+                 for chunk in split_sentences(sentence, lang, '|', 100000000000)]
+    return sentences
 
 class SNLITranslator:
     def __init__(self,
@@ -95,13 +99,13 @@ class SNLITranslator:
                                                               lang=self.lang_source))
                 sentences_two.extend(tokenize_sentences(content['sentence2'],
                                                               lang=self.lang_source))
-                sentences_one_parse.extend(tokenize_sentences(content['sentence1_parse'],
+                sentences_one_parse.extend(tokenize_sentences_unlimited_size(content['sentence1_parse'],
                                                                     lang=self.lang_source))
-                sentences_two_parse.extend(tokenize_sentences(content['sentence2_parse'],
+                sentences_two_parse.extend(tokenize_sentences_unlimited_size(content['sentence2_parse'],
                                                                     lang=self.lang_source))
-                sentences_one_binary_parse.extend(tokenize_sentences(content['sentence1_binary_parse'],
+                sentences_one_binary_parse.extend(tokenize_sentences_unlimited_size(content['sentence1_binary_parse'],
                                                                            lang=self.lang_source))
-                sentences_two_binary_parse.extend(tokenize_sentences(content['sentence2_binary_parse'],
+                sentences_two_binary_parse.extend(tokenize_sentences_unlimited_size(content['sentence2_binary_parse'],
                                                                            lang=self.lang_source))
 
             print('len sentences_one', len(sentences_one))
