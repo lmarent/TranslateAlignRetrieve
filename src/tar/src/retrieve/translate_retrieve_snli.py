@@ -7,7 +7,8 @@ import os
 from collections import defaultdict
 import pickle
 import argparse
-import translate_retrieve_squad_utils as utils
+import translate_retrieve_squad_utils as squad_utils
+import translate_retrieve_utils as utils
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -64,17 +65,17 @@ class SNLITranslator:
             sentences_one_binary_parse = []
             sentences_two_binary_parse = []
             for content in tqdm(content_lines):
-                sentences_one.append(utils.tokenize_sentences(content['sentence1'],
+                sentences_one.append(squad_utils.tokenize_sentences(content['sentence1'],
                                                               lang=self.lang_source))
-                sentences_two.append(utils.tokenize_sentences(content['sentence2'],
+                sentences_two.append(squad_utils.tokenize_sentences(content['sentence2'],
                                                               lang=self.lang_source))
-                sentences_one_parse.append(utils.tokenize_sentences(content['sentence1_parse'],
+                sentences_one_parse.append(squad_utils.tokenize_sentences(content['sentence1_parse'],
                                                                     lang=self.lang_source))
-                sentences_two_parse.append(utils.tokenize_sentences(content['sentence2_parse'],
+                sentences_two_parse.append(squad_utils.tokenize_sentences(content['sentence2_parse'],
                                                                     lang=self.lang_source))
-                sentences_one_binary_parse.append(utils.tokenize_sentences(content['sentence1_binary_parse'],
+                sentences_one_binary_parse.append(squad_utils.tokenize_sentences(content['sentence1_binary_parse'],
                                                                            lang=self.lang_source))
-                sentences_two_binary_parse.append(utils.tokenize_sentences(content['sentence2_binary_parse'],
+                sentences_two_binary_parse.append(squad_utils.tokenize_sentences(content['sentence2_binary_parse'],
                                                                            lang=self.lang_source))
 
             sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)
@@ -148,7 +149,7 @@ class SNLITranslator:
             for paragraphs in data['paragraphs']:
                 context = paragraphs['context']
 
-                context_sentences = [s for s in utils.tokenize_sentences(utils.remove_line_breaks(context),
+                context_sentences = [s for s in squad_utils.tokenize_sentences(squad_utils.remove_line_breaks(context),
                                                                          lang=self.lang_source)]
 
                 context_translated = ' '.join(self.content_translations_alignments[s]['translation']
@@ -170,7 +171,7 @@ class SNLITranslator:
                             for answer in qa['answers']:
                                 answer_translated = self.content_translations_alignments[answer['text']]['translation']
                                 answer_translated, answer_translated_start = \
-                                    utils.extract_answer_translated(answer,
+                                    squad_utils.extract_answer_translated(answer,
                                                                     answer_translated,
                                                                     context,
                                                                     context_translated,
@@ -183,7 +184,7 @@ class SNLITranslator:
                             for plausible_answer in qa['plausible_answers']:
                                 plausible_answer_translated = self.content_translations_alignments[plausible_answer['text']]['translation']
                                 answer_translated, answer_translated_start = \
-                                    utils.extract_answer_translated(plausible_answer,
+                                    squad_utils.extract_answer_translated(plausible_answer,
                                                                     plausible_answer_translated,
                                                                     context,
                                                                     context_translated,
@@ -197,7 +198,7 @@ class SNLITranslator:
                         for answer in qa['answers']:
                             answer_translated = self.content_translations_alignments[answer['text']]['translation']
                             answer_translated, answer_translated_start = \
-                                utils.extract_answer_translated(answer,
+                                squad_utils.extract_answer_translated(answer,
                                                                 answer_translated,
                                                                 context,
                                                                 context_translated,
@@ -305,12 +306,12 @@ class SNLITranslator:
         # Write the content back to the translated dataset
         if self.answers_from_alignment:
             translated_file = os.path.join(self.output_dir,
-                                           os.path.basename(self.squad_file).replace(
+                                           os.path.basename(self.snli_file).replace(
                                                '.json',
                                                '-{}.json'.format(self.lang_target)))
         else:
             translated_file = os.path.join(self.output_dir,
-                                           os.path.basename(self.squad_file).replace(
+                                           os.path.basename(self.snli_file).replace(
                                                '.json',
                                                '-{}_small.json'.format(self.lang_target)))
 
