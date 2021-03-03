@@ -47,7 +47,6 @@ class SNLITranslator:
             lines = hn.readlines()
         content_lines = []
         for line in lines:
-            print(line)
             content_lines.append(json.loads(line))
 
         # Check if the content of SNLI has been translated and aligned already
