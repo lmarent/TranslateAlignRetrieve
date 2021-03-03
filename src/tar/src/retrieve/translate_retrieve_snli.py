@@ -96,9 +96,16 @@ class SNLITranslator:
             sentences_two_parse = []
             sentences_one_binary_parse = []
             sentences_two_binary_parse = []
+            max_len_sentence_1 = 0
+            max_len_sentence_2 = 0
             for content in tqdm(content_lines):
+                if len(content['sentence1']) > max_len_sentence_1:
+                    max_len_sentence_1 = len(content['sentence1'])
                 sentences_one.extend(tokenize_sentences(content['sentence1'],
                                                               lang=self.lang_source))
+
+                if len(content['sentence2']) > max_len_sentence_2:
+                    max_len_sentence_2 = len(content['sentence2'])
                 sentences_two.extend(tokenize_sentences(content['sentence2'],
                                                               lang=self.lang_source))
                 sentences_one_parse.extend(tokenize_sentences_unlimited_size(content['sentence1_parse'],
@@ -116,7 +123,8 @@ class SNLITranslator:
             print('len sentences_two_parse', len(sentences_two_parse))
             print('len sentences_one_binary_parse', len(sentences_one_binary_parse))
             print('len sentences_two_binary_parse', len(sentences_two_binary_parse))
-
+            print('max_len_sentence_1', max_len_sentence_1)
+            print('max_len_sentence_2', max_len_sentence_2)
 
             # sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)
             # sentence_two_translated = utils.translate(sentences_two, self.snli_file,
