@@ -89,46 +89,7 @@ class SNLITranslator:
                                                                     self.snli_file, self.output_dir, self.batch_size)
             sentences_two_binary_parse_translated = utils.translate(sentences_two_binary_parse,
                                                                     self.snli_file, self.output_dir, self.batch_size)
-
-            # align sentences
-            # sentence_one_translated_align = utils.compute_alignment(sentences_one,  self.lang_source,
-            #                                                   sentence_one_translated,
-            #                                                   self.lang_target,
-            #                                                   self.alignment_type,
-            #                                                   self.snli_file,
-            #                                                   self.output_dir)
-            # sentence_two_translated_align = utils.compute_alignment(sentences_two, self.lang_source,
-            #                                                   sentence_two_translated,
-            #                                                   self.lang_target,
-            #                                                   self.alignment_type,
-            #                                                   self.snli_file,
-            #                                                   self.output_dir)
-            #
-            # sentences_one_parse_translated_align = utils.compute_alignment(sentences_one_parse, self.lang_source,
-            #                                                   sentences_one_parse_translated,
-            #                                                   self.lang_target,
-            #                                                   self.alignment_type,
-            #                                                   self.snli_file,
-            #                                                   self.output_dir)
-            # sentences_two_parse_translated_align = utils.compute_alignment(sentences_two_parse, self.lang_source,
-            #                                                   sentences_two_parse_translated,
-            #                                                   self.lang_target,
-            #                                                   self.alignment_type,
-            #                                                   self.snli_file,
-            #                                                   self.output_dir)
-            # sentences_one_binary_parse_translated_align = utils.compute_alignment(sentences_one_binary_parse, self.lang_source,
-            #                                                   sentences_one_binary_parse_translated,
-            #                                                   self.lang_target,
-            #                                                   self.alignment_type,
-            #                                                   self.snli_file,
-            #                                                   self.output_dir)
-            # sentences_two_binary_parse_translated_align = utils.compute_alignment(sentences_two_binary_parse, self.lang_source,
-            #                                                   sentences_two_binary_parse_translated,
-            #                                                   self.lang_target,
-            #                                                   self.alignment_type,
-            #                                                   self.snli_file,
-            #                                                   self.output_dir)
-
+            print('sentences_two_binary_parse_translated', sentences_two_binary_parse_translated)
 
             logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
