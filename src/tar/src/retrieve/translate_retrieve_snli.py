@@ -89,7 +89,8 @@ class SNLITranslator:
                                                                     self.snli_file, self.output_dir, self.batch_size)
             sentences_two_binary_parse_translated = utils.translate(sentences_two_binary_parse,
                                                                     self.snli_file, self.output_dir, self.batch_size)
-            print('sentences_two_binary_parse_translated', sentences_two_binary_parse_translated)
+            for sentence in sentences_two_binary_parse_translated:
+                print(sentence)
 
             logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
