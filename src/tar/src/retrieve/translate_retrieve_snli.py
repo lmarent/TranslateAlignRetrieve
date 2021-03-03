@@ -65,17 +65,17 @@ class SNLITranslator:
             sentences_one_binary_parse = []
             sentences_two_binary_parse = []
             for content in tqdm(content_lines):
-                sentences_one.append(squad_utils.tokenize_sentences(content['sentence1'],
+                sentences_one.extend(squad_utils.tokenize_sentences(content['sentence1'],
                                                               lang=self.lang_source))
-                sentences_two.append(squad_utils.tokenize_sentences(content['sentence2'],
+                sentences_two.extend(squad_utils.tokenize_sentences(content['sentence2'],
                                                               lang=self.lang_source))
-                sentences_one_parse.append(squad_utils.tokenize_sentences(content['sentence1_parse'],
+                sentences_one_parse.extend(squad_utils.tokenize_sentences(content['sentence1_parse'],
                                                                     lang=self.lang_source))
-                sentences_two_parse.append(squad_utils.tokenize_sentences(content['sentence2_parse'],
+                sentences_two_parse.extend(squad_utils.tokenize_sentences(content['sentence2_parse'],
                                                                     lang=self.lang_source))
-                sentences_one_binary_parse.append(squad_utils.tokenize_sentences(content['sentence1_binary_parse'],
+                sentences_one_binary_parse.extend(squad_utils.tokenize_sentences(content['sentence1_binary_parse'],
                                                                            lang=self.lang_source))
-                sentences_two_binary_parse.append(squad_utils.tokenize_sentences(content['sentence2_binary_parse'],
+                sentences_two_binary_parse.extend(squad_utils.tokenize_sentences(content['sentence2_binary_parse'],
                                                                            lang=self.lang_source))
 
             sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)

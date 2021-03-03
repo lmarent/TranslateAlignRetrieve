@@ -8,7 +8,7 @@ from collections import defaultdict
 import pickle
 import argparse
 import translate_retrieve_utils as utils
-import translate_retrieve_squad_utils import squad_utils
+import translate_retrieve_squad_utils as squad_utils
 from tqdm import tqdm
 import logging
 
