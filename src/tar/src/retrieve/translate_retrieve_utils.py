@@ -49,7 +49,7 @@ def translate(source_sentences, file, output_dir, batch_size):
     :param batch_size: number of sentence to translate in an execution.
     :return:
     """
-
+    print('number of sentences:', len(source_sentences) )
     filename = os.path.basename(file)
     source_filename = os.path.join(output_dir, '{}_source_translate'.format(filename))
     with open(source_filename, 'w') as sf:
