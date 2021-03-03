@@ -106,6 +106,8 @@ class SNLITranslator:
                 content_line['idLeyenda'] = content['captionID']
                 content_line['etiqueta_predominante'] = content['gold_label']
                 content_line['idPar'] = content['pairID']
+
+                print(content_line)
                 new_content_lines.append(content_line)
             # Translate contexts, questions and answers all together and write to file.
             # Also remove duplicates before to translate with set
@@ -141,9 +143,12 @@ class SNLITranslator:
             # using the content_translations_alignments
         """
         with open(self.snli_file) as fn:
-            content = json.load(fn)
+            lines = fn.readlines()
+        content_lines = []
+        for line in lines:
+            content_lines.append(json.loads(line))
 
-        for data in tqdm(content['data']):
+        for data in tqdm(content_lines['data']):
             title = data['title']
             data['title'] = self.content_translations_alignments[title]['translation']
             for paragraphs in data['paragraphs']:
