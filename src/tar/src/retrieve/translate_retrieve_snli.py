@@ -38,9 +38,11 @@ def tokenize_sentences(text, lang):
     return sentences
 
 def tokenize_sentences_unlimited_size(text, lang):
+    print(text)
     sentences = [chunk
                  for sentence in sent_tokenize(text, utils.LANGUAGE_ISO_MAP[lang])
                  for chunk in split_sentences(sentence, lang, '|', 100000000000)]
+    print(sentences)
     return sentences
 
 class SNLITranslator:
