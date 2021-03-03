@@ -9,9 +9,35 @@ import pickle
 import argparse
 import translate_retrieve_squad_utils as squad_utils
 import translate_retrieve_utils as utils
+from nltk import sent_tokenize
 import logging
 
 logging.basicConfig(level=logging.INFO)
+
+
+def split_sentences(text, lang, delimiter=utils.SPLIT_DELIMITER, max_size=utils.MAX_NUM_TOKENS, tokenized=True):
+    """
+       Chunk sentences longer than a maximum number of words/tokens based on a delimiter character.
+       This option is used only for very long sentences to avoid shorter translation than the
+       original source length.
+       Note that the delimiter can't be a trailing character
+    """
+    text_len = len(utils.tokenize(text, lang, return_str=True).split()) if tokenized else len(text.split())
+    if text_len >= max_size:
+        delimiter_match = delimiter + ' '
+        text_chunks = [chunk.strip() for chunk in text.split(delimiter_match) if chunk]
+        # Add the delimiter lost during chunking
+        text_chunks = [chunk + delimiter for chunk in text_chunks[:-1]] + [text_chunks[-1]]
+        return text_chunks
+    return [text]
+
+
+def tokenize_sentences(text, lang):
+    sentences = [chunk
+                 for sentence in sent_tokenize(text, utils.LANGUAGE_ISO_MAP[lang])
+                 for chunk in split_sentences(sentence, lang, '|')]
+    return sentences
+
 
 class SNLITranslator:
     def __init__(self,
@@ -65,17 +91,17 @@ class SNLITranslator:
             sentences_one_binary_parse = []
             sentences_two_binary_parse = []
             for content in tqdm(content_lines):
-                sentences_one.extend(squad_utils.tokenize_sentences(content['sentence1'],
+                sentences_one.extend(tokenize_sentences(content['sentence1'],
                                                               lang=self.lang_source))
-                sentences_two.extend(squad_utils.tokenize_sentences(content['sentence2'],
+                sentences_two.extend(tokenize_sentences(content['sentence2'],
                                                               lang=self.lang_source))
-                sentences_one_parse.extend(squad_utils.tokenize_sentences(content['sentence1_parse'],
+                sentences_one_parse.extend(tokenize_sentences(content['sentence1_parse'],
                                                                     lang=self.lang_source))
-                sentences_two_parse.extend(squad_utils.tokenize_sentences(content['sentence2_parse'],
+                sentences_two_parse.extend(tokenize_sentences(content['sentence2_parse'],
                                                                     lang=self.lang_source))
-                sentences_one_binary_parse.extend(squad_utils.tokenize_sentences(content['sentence1_binary_parse'],
+                sentences_one_binary_parse.extend(tokenize_sentences(content['sentence1_binary_parse'],
                                                                            lang=self.lang_source))
-                sentences_two_binary_parse.extend(squad_utils.tokenize_sentences(content['sentence2_binary_parse'],
+                sentences_two_binary_parse.extend(tokenize_sentences(content['sentence2_binary_parse'],
                                                                            lang=self.lang_source))
 
             print('len sentences_one', len(sentences_one))
