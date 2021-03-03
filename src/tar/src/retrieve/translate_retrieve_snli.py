@@ -78,12 +78,12 @@ class SNLITranslator:
                 sentences_two_binary_parse.extend(squad_utils.tokenize_sentences(content['sentence2_binary_parse'],
                                                                            lang=self.lang_source))
 
-            print(sentences_one, len(sentences_one))
-            print(sentences_two, len(sentences_two))
-            print(sentences_one_parse, len(sentences_one_parse))
-            print(sentences_two_parse, len(sentences_two_parse))
-            print(sentences_one_binary_parse, len(sentences_one_binary_parse))
-            print(sentences_two_binary_parse, len(sentences_two_binary_parse))
+            print('len sentences_one', len(sentences_one))
+            print('len sentences_two', len(sentences_two))
+            print('len sentences_one_parse', len(sentences_one_parse))
+            print('len sentences_two_parse', len(sentences_two_parse))
+            print('len sentences_one_binary_parse', len(sentences_one_binary_parse))
+            print('len sentences_two_binary_parse', len(sentences_two_binary_parse))
 
 
             sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)
