@@ -150,7 +150,7 @@ class SNLITranslator:
                 print(content_line)
                 new_content_lines.append(content_line)
 
-            with open(content_translations_alignments_file, 'w') as fn:
+            with open(content_translations_alignments_file, 'wb') as fn:
                 pickle.dump(new_content_lines, fn)
 
             translated_file = os.path.join(self.output_dir,
