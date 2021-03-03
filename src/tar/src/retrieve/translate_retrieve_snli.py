@@ -340,7 +340,7 @@ class SNLITranslator:
 if __name__ == "__main__":
     start = time.time()
     parser = argparse.ArgumentParser()
-    parser.add_argument('-squad_file', type=str, help='SNLI dataset to translate')
+    parser.add_argument('-snli_file', type=str, help='SNLI dataset to translate')
     parser.add_argument('-lang_source', type=str, default='en',
                         help='language of the SNLI dataset to translate (the default value is set to English)')
     parser.add_argument('-lang_target', type=str, help='translation language')
@@ -352,14 +352,14 @@ if __name__ == "__main__":
     parser.add_argument('-batch_size', type=int, default='32', help='batch_size for the translation script '
                                                                     '(change this value in case of CUDA out-of-memory')
     args = parser.parse_args()
-
+    print(args)
     # Create output directory if doesn't exist already
     try:
         os.mkdir(args.output_dir)
     except FileExistsError:
         pass
 
-    translator = SNLITranslator(args.squad_file,
+    translator = SNLITranslator(args.snli_file,
                                  args.lang_source,
                                  args.lang_target,
                                  args.output_dir,

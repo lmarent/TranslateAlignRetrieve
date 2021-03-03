@@ -7,10 +7,10 @@ from sacremoses import MosesTokenizer, MosesDetokenizer
 from collections import defaultdict
 from nltk import sent_tokenize
 
-from .translate_retrieve_utils import tokenize
-from .translate_retrieve_utils import MAX_NUM_TOKENS
-from .translate_retrieve_utils import SPLIT_DELIMITER
-from .translate_retrieve_utils import LANGUAGE_ISO_MAP
+from translate_retrieve_utils import tokenize
+from translate_retrieve_utils import MAX_NUM_TOKENS
+from translate_retrieve_utils import SPLIT_DELIMITER
+from translate_retrieve_utils import LANGUAGE_ISO_MAP
 
 
 
