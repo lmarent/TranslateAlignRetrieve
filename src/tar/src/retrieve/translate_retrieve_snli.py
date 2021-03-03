@@ -149,7 +149,16 @@ class SNLITranslator:
 
                 print(content_line)
                 new_content_lines.append(content_line)
+
             with open(content_translations_alignments_file, 'w') as fn:
+                pickle.dump(new_content_lines, fn)
+
+            translated_file = os.path.join(self.output_dir,
+                                       os.path.basename(self.snli_file).replace(
+                                           '.json',
+                                           '-{}_small.json'.format(self.lang_target)))
+
+            with open(translated_file, 'w') as fn:
                 json.dump(new_content_lines, fn)
 
         # Load content translated and aligned from file
