@@ -146,7 +146,7 @@ class SNLITranslator:
                 content_line['captionID'] = content['captionID']
                 content_line['gold_label'] = content['gold_label']
                 content_line['pairID'] = content['pairID']
-
+                i = i + 1
                 print(content_line)
                 new_content_lines.append(content_line)
 
