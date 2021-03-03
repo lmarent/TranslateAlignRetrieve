@@ -12,9 +12,9 @@ LANG_TGT=$5
 
 if [[ $# -eq 0 ]]
   then
-  MODEL1=/content/gdrive/MyDrive/data/exp/model.en-es_step_100000.pt
-  MODEL2=/content/gdrive/MyDrive/data/exp/model.en-es_step_99000.pt
-  MODEL3=/content/gdrive/MyDrive/data/exp/model.en-es_step_98000.pt
+  MODEL1=/content/gdrive/MyDrive/NMT_Test/nmt/data/exp/model.en-es_step_100000.pt
+  MODEL2=/content/gdrive/MyDrive/NMT_Test/nmt/data/exp/model.en-es_step_99000.pt
+  MODEL3=/content/gdrive/MyDrive/NMT_Test/nmt/data/exp/model.en-es_step_98000.pt
   LANG_SRC=en
   LANG_TGT=es
 fi
