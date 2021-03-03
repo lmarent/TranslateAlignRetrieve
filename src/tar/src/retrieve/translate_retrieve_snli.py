@@ -130,12 +130,12 @@ class SNLITranslator:
                                                       self.output_dir, self.batch_size)
             sentences_one_parse_translated = utils.translate(sentences_one_parse,
                                                              self.snli_file, self.output_dir, self.batch_size)
-            sentences_two_parse_translated = utils.translate(sentences_two_parse,
-                                                             self.snli_file, self.output_dir, self.batch_size)
-            sentences_one_binary_parse_translated = utils.translate(sentences_one_binary_parse,
-                                                                    self.snli_file, self.output_dir, self.batch_size)
-            sentences_two_binary_parse_translated = utils.translate(sentences_two_binary_parse,
-                                                                    self.snli_file, self.output_dir, self.batch_size)
+            # sentences_two_parse_translated = utils.translate(sentences_two_parse,
+            #                                                  self.snli_file, self.output_dir, self.batch_size)
+            # sentences_one_binary_parse_translated = utils.translate(sentences_one_binary_parse,
+            #                                                         self.snli_file, self.output_dir, self.batch_size)
+            # sentences_two_binary_parse_translated = utils.translate(sentences_two_binary_parse,
+            #                                                         self.snli_file, self.output_dir, self.batch_size)
 
             logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
@@ -146,9 +146,9 @@ class SNLITranslator:
                 content_line['sentence1'] = sentence_one_translated[i]
                 content_line['sentence2'] = sentence_two_translated[i]
                 content_line['sentence1_parse'] = sentences_one_parse_translated[i]
-                content_line['sentence2_parse'] = sentences_two_parse_translated[i]
-                content_line['sentence1_binary_parse'] = sentences_one_binary_parse_translated[i]
-                content_line['sentence2_binary_parse'] = sentences_two_binary_parse_translated[i]
+                # content_line['sentence2_parse'] = sentences_two_parse_translated[i]
+                # content_line['sentence1_binary_parse'] = sentences_one_binary_parse_translated[i]
+                # content_line['sentence2_binary_parse'] = sentences_two_binary_parse_translated[i]
                 content_line['annotator_labels'] = content['annotator_labels']
                 content_line['captionID'] = content['captionID']
                 content_line['gold_label'] = content['gold_label']
