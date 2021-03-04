@@ -121,15 +121,6 @@ class SNLITranslator:
                 sentences_two_binary_parse.extend(tokenize_sentences_unlimited_size(content['sentence2_binary_parse'],
                                                                            lang=self.lang_source))
 
-            print('len sentences_one', len(sentences_one))
-            print('len sentences_two', len(sentences_two))
-            print('len sentences_one_parse', len(sentences_one_parse))
-            print('len sentences_two_parse', len(sentences_two_parse))
-            print('len sentences_one_binary_parse', len(sentences_one_binary_parse))
-            print('len sentences_two_binary_parse', len(sentences_two_binary_parse))
-            print('max_len_sentence_1', max_len_sentence_1)
-            print('max_len_sentence_2', max_len_sentence_2)
-
             sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)
             sentence_two_translated = utils.translate(sentences_two, self.snli_file,
                                                       self.output_dir, self.batch_size)
@@ -163,7 +154,9 @@ class SNLITranslator:
                                            '-{}_small.json'.format(self.lang_target)))
 
             with open(translated_file, 'w') as fn:
-                json.dump(new_content_lines, fn)
+                for content_line in new_content_lines:
+                    json.dump(content_line, fn)
+                    fn.write('\n')
 
         # Load content translated and aligned from file
         else:
