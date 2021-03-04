@@ -10,6 +10,7 @@ import argparse
 import translate_retrieve_utils as utils
 from nltk import sent_tokenize
 import logging
+import stanza
 
 logging.basicConfig(level=logging.INFO)
 
@@ -74,6 +75,10 @@ class SNLITranslator:
     # The output is a dictionary with sentence pairs, sentences and classification
     # and their translation/alignment as values
     def translate_align_content(self):
+
+        stanza.download('es', processors='tokenize,mwt,pos,lemma,depparse')
+        nlp = stanza.Pipeline('es', processors='tokenize,mwt,pos,lemma,depparse')
+
         # Load snli content and get snli contexts
         with open(self.snli_file) as hn:
             lines = hn.readlines()
@@ -128,14 +133,6 @@ class SNLITranslator:
             sentence_one_translated = utils.translate(sentences_one, self.snli_file, self.output_dir, self.batch_size)
             sentence_two_translated = utils.translate(sentences_two, self.snli_file,
                                                       self.output_dir, self.batch_size)
-            sentences_one_parse_translated = utils.translate(sentences_one_parse,
-                                                             self.snli_file, self.output_dir, self.batch_size)
-            # sentences_two_parse_translated = utils.translate(sentences_two_parse,
-            #                                                  self.snli_file, self.output_dir, self.batch_size)
-            # sentences_one_binary_parse_translated = utils.translate(sentences_one_binary_parse,
-            #                                                         self.snli_file, self.output_dir, self.batch_size)
-            # sentences_two_binary_parse_translated = utils.translate(sentences_two_binary_parse,
-            #                                                         self.snli_file, self.output_dir, self.batch_size)
 
             logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
@@ -145,17 +142,17 @@ class SNLITranslator:
                 content_line = {}
                 content_line['sentence1'] = sentence_one_translated[i]
                 content_line['sentence2'] = sentence_two_translated[i]
-                content_line['sentence1_parse'] = sentences_one_parse_translated[i]
-                # content_line['sentence2_parse'] = sentences_two_parse_translated[i]
-                # content_line['sentence1_binary_parse'] = sentences_one_binary_parse_translated[i]
-                # content_line['sentence2_binary_parse'] = sentences_two_binary_parse_translated[i]
+                sentence_one_parsed = nlp(sentence_one_translated[i])
+                sentence_two_parsed = nlp(sentence_two_translated[i])
+
+                content_line['sentence1_parse'] = sentence_one_parsed.to_dict()
+                content_line['sentence2_parse'] = sentence_two_parsed.to_dict()
                 content_line['annotator_labels'] = content['annotator_labels']
                 content_line['captionID'] = content['captionID']
                 content_line['gold_label'] = content['gold_label']
                 content_line['pairID'] = content['pairID']
-                i = i + 1
-                print(content_line)
                 new_content_lines.append(content_line)
+                i = i + 1
 
             with open(content_translations_alignments_file, 'wb') as fn:
                 pickle.dump(new_content_lines, fn)
