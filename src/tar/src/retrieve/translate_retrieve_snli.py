@@ -39,10 +39,8 @@ def tokenize_sentences(text, lang):
     return sentences
 
 def tokenize_sentences_unlimited_size(text, lang):
-    print('initial text:', text)
     sentences = [chunk
                  for chunk in split_sentences(text, lang, '|', 100000000000)]
-    print('sentences:', sentences)
     return sentences
 
 class SNLITranslator:
@@ -180,7 +178,6 @@ if __name__ == "__main__":
     parser.add_argument('-batch_size', type=int, default='32', help='batch_size for the translation script '
                                                                     '(change this value in case of CUDA out-of-memory')
     args = parser.parse_args()
-    print(args)
     # Create output directory if doesn't exist already
     try:
         os.mkdir(args.output_dir)
