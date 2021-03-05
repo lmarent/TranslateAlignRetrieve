@@ -125,36 +125,28 @@ class SNLITranslator:
 
             logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
-            i = 0
-            new_content_lines = []
-            for content in tqdm(content_lines):
-                content_line = {}
-                content_line['sentence1'] = sentence_one_translated[i]
-                content_line['sentence2'] = sentence_two_translated[i]
-                sentence_one_parsed = nlp(sentence_one_translated[i])
-                sentence_two_parsed = nlp(sentence_two_translated[i])
-
-                content_line['sentence1_parse'] = sentence_one_parsed.to_dict()
-                content_line['sentence2_parse'] = sentence_two_parsed.to_dict()
-                content_line['annotator_labels'] = content['annotator_labels']
-                content_line['captionID'] = content['captionID']
-                content_line['gold_label'] = content['gold_label']
-                content_line['pairID'] = content['pairID']
-                new_content_lines.append(content_line)
-                i = i + 1
-
-            with open(content_translations_alignments_file, 'wb') as fn:
-                pickle.dump(new_content_lines, fn)
-
             translated_file = os.path.join(self.output_dir,
                                        os.path.basename(self.snli_file).replace(
                                            '.json',
                                            '-{}_small.json'.format(self.lang_target)))
-
             with open(translated_file, 'w') as fn:
-                for content_line in new_content_lines:
+                i = 0
+                for content in tqdm(content_lines):
+                    content_line = {}
+                    content_line['sentence1'] = sentence_one_translated[i]
+                    content_line['sentence2'] = sentence_two_translated[i]
+                    sentence_one_parsed = nlp(sentence_one_translated[i])
+                    sentence_two_parsed = nlp(sentence_two_translated[i])
+
+                    content_line['sentence1_parse'] = sentence_one_parsed.to_dict()
+                    content_line['sentence2_parse'] = sentence_two_parsed.to_dict()
+                    content_line['annotator_labels'] = content['annotator_labels']
+                    content_line['captionID'] = content['captionID']
+                    content_line['gold_label'] = content['gold_label']
+                    content_line['pairID'] = content['pairID']
                     json.dump(content_line, fn)
                     fn.write('\n')
+                    i = i + 1
 
         # Load content translated and aligned from file
         else:
