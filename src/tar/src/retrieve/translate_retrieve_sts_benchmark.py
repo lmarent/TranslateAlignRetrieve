@@ -76,7 +76,7 @@ class STSBenchmarkTranslator:
         headers = ['genre' , 'filename', 'year', 'captionID', 'score', 'sentence1', 'sentence2']
         content_lines = []
         with open(self.sts_benchmark_file) as hn:
-            csvFile = csv.reader(hn, delimiter='\t')
+            csvFile = csv.reader(hn, delimiter='|')
             for row in csvFile:
                 print('number of elements', len(row))
                 if len(row) < 7:
