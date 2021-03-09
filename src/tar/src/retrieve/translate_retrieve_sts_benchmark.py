@@ -115,7 +115,7 @@ class STSBenchmarkTranslator:
             logging.info('Collected {} sentence to translate'.format(len(sentences_one)))
 
             translated_file = os.path.join(self.output_dir,
-                                       os.path.basename(self.snli_file).replace(
+                                       os.path.basename(self.sts_benchmark_file).replace(
                                            '.json',
                                            '-{}_small.json'.format(self.lang_target)))
             with open(translated_file, 'w') as fn:
