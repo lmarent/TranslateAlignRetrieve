@@ -79,7 +79,7 @@ class STSBenchmarkTranslator:
             csvFile = csv.reader(hn, delimiter='|')
             for row in csvFile:
                 print('number of elements', len(row))
-                if len(row) < 7:
+                if len(row) != 7:
                   print(row)
                 line = {}
                 for i in range(len(headers)): 
