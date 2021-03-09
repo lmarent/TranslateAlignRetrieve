@@ -49,15 +49,12 @@ class STSBenchmarkTranslator:
                  lang_source,
                  lang_target,
                  output_dir,
-                 alignment_type,
-                 answers_from_alignment,
                  batch_size):
 
         self.sts_benchmark_file = sts_benchmark_file
         self.lang_source = lang_source
         self.lang_target = lang_target
         self.output_dir = output_dir
-        self.alignment_type = alignment_type
         self.batch_size = batch_size
 
         # initialize content_translations_alignments
@@ -66,12 +63,11 @@ class STSBenchmarkTranslator:
         # initialize SNLI version
         self.sts_benchmark_version = '2017'
 
-    def translate_align_content(self):
-        # Translate all the textual content in the SNLI dataset,
-        # that are, sentences and gold classification.
-        # The alignment between context and its translation is then computed.
-        # The output is a dictionary with sentence pairs, sentences and classification
-        # and their translation/alignment as values
+    def translate_(self):
+        # Translate all the textual content in the STS Benchmark dataset,
+        # that are, sentences and score.
+        # The output is a dictionary with sentence pairs, sentences and score
+        # and their translation as values
 
         stanza.download('es', processors='tokenize,mwt,pos,lemma,depparse')
         nlp = stanza.Pipeline('es', processors='tokenize,mwt,pos,lemma,depparse')
@@ -154,8 +150,6 @@ if __name__ == "__main__":
                         help='language of the STS Benchmark dataset to translate (the default value is set to English)')
     parser.add_argument('-lang_target', type=str, help='translation language')
     parser.add_argument('-output_dir', type=str, help='directory where all the generated files are stored')
-    parser.add_argument('-alignment_type', type=str,
-                        default='forward', help='use a given translation service')
     parser.add_argument('-batch_size', type=int, default='32', help='batch_size for the translation script '
                                                                     '(change this value in case of CUDA out-of-memory')
     args = parser.parse_args()
@@ -169,11 +163,10 @@ if __name__ == "__main__":
                                  args.lang_source,
                                  args.lang_target,
                                  args.output_dir,
-                                 args.alignment_type,
                                  args.batch_size)
 
     logging.info('Translate STS Benchmark textual content')
-    translator.translate_align_content()
+    translator.translate()
 
 
     end = time.time()
