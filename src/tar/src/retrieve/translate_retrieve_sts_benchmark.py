@@ -76,11 +76,14 @@ class STSBenchmarkTranslator:
         headers = ['genre' , 'filename', 'year', 'captionID', 'score', 'sentence1', 'sentence2']
         content_lines = []
         with open(self.sts_benchmark_file) as hn:
-            csv = csv.reader(hn, delimiter='\t')
+            csvFile = csv.reader(hn, delimiter='\t')
             for row in csvFile:
+                print('number of elements', len(row))
+                if len(row) < 7:
+                  print(row)
                 line = {}
                 for i in range(len(headers)): 
-                    line[header[i]] = row[i]
+                    line[headers[i]] = row[i]
                 content_lines.append(line)
 
         # Check if the content of STS Benchmark has been translated and aligned already
