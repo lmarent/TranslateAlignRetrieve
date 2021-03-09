@@ -63,7 +63,7 @@ class STSBenchmarkTranslator:
         # initialize SNLI version
         self.sts_benchmark_version = '2017'
 
-    def translate_(self):
+    def translate(self):
         # Translate all the textual content in the STS Benchmark dataset,
         # that are, sentences and score.
         # The output is a dictionary with sentence pairs, sentences and score
