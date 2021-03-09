@@ -89,7 +89,7 @@ class STSBenchmarkTranslator:
         # Check if the content of STS Benchmark has been translated and aligned already
         content_translations_alignments_file = os.path.join(self.output_dir,
                                                     '{}_content_translations_alignments.{}'.format(
-                                                        os.path.basename(self.snli_file),
+                                                        os.path.basename(self.sts_benchmark_file),
                                                         self.lang_target))
         if not os.path.isfile(content_translations_alignments_file):
             # Extract sentence one and two.             
