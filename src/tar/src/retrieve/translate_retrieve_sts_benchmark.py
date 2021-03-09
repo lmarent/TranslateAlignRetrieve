@@ -98,14 +98,14 @@ class STSBenchmarkTranslator:
             max_len_sentence_1 = 0
             max_len_sentence_2 = 0
             for content in tqdm(content_lines):
-                if len(content[5]) > max_len_sentence_1:
-                    max_len_sentence_1 = len(content[5])
-                sentences_one.extend(tokenize_sentences(content[5],
+                if len(content['sentence1']) > max_len_sentence_1:
+                    max_len_sentence_1 = len(content['sentence1'])
+                sentences_one.extend(tokenize_sentences(content['sentence1'],
                                                               lang=self.lang_source))
 
-                if len(content[6]) > max_len_sentence_2:
-                    max_len_sentence_2 = len(content[6])
-                sentences_two.extend(tokenize_sentences(content[6],
+                if len(content['sentence2']) > max_len_sentence_2:
+                    max_len_sentence_2 = len(content['sentence2'])
+                sentences_two.extend(tokenize_sentences(content['sentence2'],
                                                               lang=self.lang_source))
 
             sentence_one_translated = utils.translate(sentences_one, self.sts_benchmark_file, self.output_dir, self.batch_size)
